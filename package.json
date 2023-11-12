@@ -1,0 +1,28 @@
+{
+  "name": "graphql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "json-server": "json-server --watch db.json",
+    "compile": "tsc",
+    "start": "npm run compile && nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.9.5",
+    "axios": "^1.6.1",
+    "dotenv": "^16.3.1",
+    "graphql": "^16.8.1",
+    "json-server": "^0.17.4",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  }
+}
