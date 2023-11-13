@@ -2,6 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import resolvers from "./resolvers.js";
 import typeDefs from "./typeDefs.js";
+import "./mongo.connection.js";
 
 const server = new ApolloServer({
   typeDefs,
