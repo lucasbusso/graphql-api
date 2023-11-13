@@ -1,58 +1,35 @@
-import { v1 as uuid } from "uuid";
-import axios from "axios";
 import dotenv from "dotenv";
+import Book from "./book.model.js";
+import { v1 as uuid } from "uuid";
 
 dotenv.config();
-
-const apiUrl = process.env.JSON_SERVER_URL;
 
 const resolvers = {
   Query: {
     booksList: async () => {
-      const response = await axios.get(apiUrl);
-      const { data } = response;
-      return data;
+      return Book.find({});
     },
-    booksCount: async () => {
-      const response = await axios.get(apiUrl);
-      const { data } = response;
-      return data.length;
-    },
+    booksCount: async () => Book.collection.countDocuments(),
     findBook: async (root, args) => {
       const { title } = args;
-      const response = await axios.get(apiUrl);
-      const { data } = response;
-      return data.find((book) => book.title === title);
+      return Book.findOne({ title: title });
     },
     findByPhone: async (root, args) => {
-      const response = await axios.get(apiUrl);
-      const { data } = response;
-      if (!args.phone) return data;
-
-      const byPhone = (book) =>
-        args.phone === "YES" ? book.phone : !book.phone;
-      return data.filter(byPhone);
+      const { phone } = args;
+      if (!phone) return Book.find({});
+      return Book.find({ phone: { $exists: phone === "YES" } });
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const response = await axios.post(apiUrl, {
-        title: args.title,
-        author: args.author,
-        phone: args.phone,
-        id: uuid(),
-      });
-      const { data } = response;
-      return data;
+      const newId = uuid();
+      const newBook = new Book({ ...args, id: newId });
+      return newBook.save();
     },
     updatePhone: async (root, args) => {
-      const { data } = await axios.get(apiUrl);
-      const bookIndex = data.findIndex((book) => book.title === args.title);
-      if (bookIndex === -1) return null;
-      const updatedBook = { ...data[bookIndex], phone: args.phone };
-      data[bookIndex] = updatedBook;
-      await axios.put(`${apiUrl}/${updatedBook.id}`, updatedBook);
-      return updatedBook;
+      const book = await Book.findOne({ title: args.title });
+      book.phone = args.phone;
+      return book.save();
     },
   },
 };
