@@ -1,4 +1,6 @@
-const typeDefs = `#graphql
+import { gql } from "apollo-server";
+
+const typeDefs = gql`
   enum HasPhone {
     YES
     NO
@@ -19,13 +21,12 @@ const typeDefs = `#graphql
   }
 
   type Mutation {
-    addBook(
-      title: String!
-      author: String!
-      phone: String
-      id: ID
-    ): Book
-    updatePhone(title: String! phone: String!): Book
+    addBook(title: String!, author: String!, phone: String, id: ID): Book
+    updatePhone(title: String!, phone: String!): Book
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 `;
 

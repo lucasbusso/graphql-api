@@ -1,16 +1,15 @@
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { ApolloServer } from "apollo-server";
+
 import resolvers from "./resolvers.js";
 import typeDefs from "./typeDefs.js";
 import "./mongo.connection.js";
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  typeDefs: typeDefs,
+  resolvers: resolvers,
 });
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
+server.listen().then(({ url, subscriptionsUrl }) => {
+  console.log(`Server ready at ${url}`);
+  console.log(`Server ready at ${subscriptionsUrl}`);
 });
-
-console.log(`🚀  Server ready at: ${url}`);

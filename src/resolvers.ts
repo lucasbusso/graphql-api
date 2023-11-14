@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
 import Book from "./book.model.js";
 import { v1 as uuid } from "uuid";
+import { PubSub } from "apollo-server";
 
 dotenv.config();
+
+const pubsub = new PubSub();
 
 const resolvers = {
   Query: {
@@ -24,12 +27,18 @@ const resolvers = {
     addBook: async (root, args) => {
       const newId = uuid();
       const newBook = new Book({ ...args, id: newId });
+      pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
       return newBook.save();
     },
     updatePhone: async (root, args) => {
       const book = await Book.findOne({ title: args.title });
       book.phone = args.phone;
       return book.save();
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
     },
   },
 };
